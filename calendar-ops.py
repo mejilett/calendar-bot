@@ -11,12 +11,12 @@ from googleapiclient.errors import HttpError
 
 def get_calendar_service():
     SCOPES = ["https://www.googleapis.com/auth/calendar"] #full calendar access w/ google calendar api
-    credentials = service_account.Credentials.from_service_account_file(credentials.json, scopes=SCOPES)
+    credentials = service_account.Credentials.from_service_account_file('credentials.json', scopes=SCOPES)
     return build('calendar', 'v3', credentials=credentials)
 
 def create_event(service, title, date_str, start_str, duration_min=60):
+    service = get_calendar_service()
     timezone = pytz.timezone('America/Los Angeles')
-
     start_time_str = f"{date_str} {start_str}"
     start_time = timezone.localize(datetime.strptime(start_time_str, "%Y-%m-%d %H:%M"))
     end_time = start_time + timedelta(minutes=duration_min)
@@ -32,8 +32,15 @@ def create_event(service, title, date_str, start_str, duration_min=60):
             'timeZone': 'America/Los Angeles',
         },     
     }
-    return service.events().insert(calendarId='primary', body=event).execute()
+    return {
+        'id': event['id'],
+        'title': title,
+        'start': f"{date_str} {start_str}"
+    }
+    event = service.events().insert(calendarId='primary', body=event).execute()
 
-    
-
-
+#delete a scheduled meeting
+def delete_event(event_id):
+    service = get_calendar_service()
+    service.events().delete(calendarID='primary', eventId=event_id).execute()
+    return {'success': True, 'message': 'Event deleted successfully'}
