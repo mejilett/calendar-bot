@@ -2,6 +2,8 @@
 import requests
 #import jsonify
 
+key = "" # bot token from discord
+
 #api = WebexTeamsAPI(access_token=key)
 #id = api.people.me().id
 
