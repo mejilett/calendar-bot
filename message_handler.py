@@ -4,8 +4,6 @@ previously_handled_messages = []
 BOT_NAME = "final-porject"
 
 def handle_message(message):
-  #print("Handling!")
-  #return "test message"
   if (message['id'] in previously_handled_messages):
     print("Message id " + message['id'] + " already seen. Skipping.")
     return None
