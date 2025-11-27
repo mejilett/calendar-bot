@@ -1,6 +1,7 @@
 import requests
 import time
-#import message_handler
+import json
+from message_handler import handle_message # message_handler.py
 
 BOT_TOKEN = ""
 PROJECT_ROOM_ID = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vNDE2MTM2ODAtY2E4MC0xMWYwLTgyNjAtNTVhZTBhYzkxNzYw"
@@ -10,13 +11,16 @@ def authorized_get(endpoint, params=None):
   r = requests.get("https://webexapis.com/v1" + endpoint,
                    headers = {"Authorization": "Bearer " + BOT_TOKEN},
                    params = params)
+  print(r.json())
+  if (r.status_code == 429):
+    print("Rate limit exceeded!")
+    
   return r
 
 def authorized_post(endpoint, params=None, data=None):
   r = requests.post("https://webexapis.com/v1" + endpoint,
                     headers = {"Authorization": "Bearer " + BOT_TOKEN, "Content-Type": "application/json"},
-                    params = params,
-                    post_data = data)
+                    data = json.dumps(data))
 
 # this returns the bot id and information
 # not terribly useful but good for debug on startup
@@ -52,7 +56,9 @@ def get_message(room_id, count=1):
 # sends a message
 # assuming i did it right
 def post_message(room_id, text):
-  api_response = authorized_posts("/messages", data = {"roomId": room_id, "text": text})
+  api_response = authorized_post("/messages", data = {"roomId": room_id, "text": text})
+  if (api_response == None):
+    return None
   return api_response.json()
 
 # this function starts up the bot and inits the main loop
@@ -71,10 +77,18 @@ def main():
   # main loop
   # basically grabs messages and passes them to message handlers
   while True:
-    poll_interval = 2000
-    time.sleep(poll_interval/1000) # 2 ms poll interval
+    poll_interval = 2
+    time.sleep(poll_interval) # 2 sec poll interval
     message = get_message(room['id'])
-    
-  
+    #print(message)
+    if (len(message['items']) < 1):
+      # no messages so skip
+      continue
+    response = handle_message(message['items'][0])
+    #print(response)
+    if (response != None):
+      post_message(room['id'], response)
 
-main()
+
+if __name__ == "__main__":
+  main()
