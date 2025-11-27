@@ -1,7 +1,7 @@
 import requests
 import time
 import json
-from message_handler import handle_message # message_handler.py
+from message_handler import handle_message, id_trunc # message_handler.py
 
 BOT_TOKEN = ""
 PROJECT_ROOM_ID = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vNDE2MTM2ODAtY2E4MC0xMWYwLTgyNjAtNTVhZTBhYzkxNzYw"
@@ -11,10 +11,14 @@ def authorized_get(endpoint, params=None):
   r = requests.get("https://webexapis.com/v1" + endpoint,
                    headers = {"Authorization": "Bearer " + BOT_TOKEN},
                    params = params)
-  print(r.json())
+  #print(r.json())
   if (r.status_code == 429):
     print("Rate limit exceeded!")
-    
+    retry_after_interval = r.headers['Retry-After']
+    print(f"Retry-After header: {retry_after_interval}")
+    print(f"Waiting {retry_after_interval} seconds...")
+    time.sleep(int(retry_after_interval))
+    return authorized_get(endpoint, params=params)
   return r
 
 def authorized_post(endpoint, params=None, data=None):
@@ -72,7 +76,7 @@ def main():
   rooms = get_rooms()
   room = get_room_by_id(rooms, PROJECT_ROOM_ID)
   print(f"Found {len(rooms)} rooms. Arbitrarilty selecting room {room['title']}")
-  print(f"Room ID: {room['id']}")
+  print(f"Room ID: {id_trunc(room['id'])}")
 
   # main loop
   # basically grabs messages and passes them to message handlers
