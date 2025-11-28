@@ -7,11 +7,12 @@ BOT_TOKEN = ""
 PROJECT_ROOM_ID = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vNDE2MTM2ODAtY2E4MC0xMWYwLTgyNjAtNTVhZTBhYzkxNzYw"
 
 # simple authorized_get
+# if gets a status code 429, cisco has rate limited us
+# so wait for the header timeout and try the query again
 def authorized_get(endpoint, params=None):
   r = requests.get("https://webexapis.com/v1" + endpoint,
                    headers = {"Authorization": "Bearer " + BOT_TOKEN},
                    params = params)
-  #print(r.json())
   if (r.status_code == 429):
     print("Rate limit exceeded!")
     retry_after_interval = r.headers['Retry-After']
@@ -21,6 +22,9 @@ def authorized_get(endpoint, params=None):
     return authorized_get(endpoint, params=params)
   return r
 
+# simple authorized post
+# basically just a wrapper so i dont have to put the token
+# every time
 def authorized_post(endpoint, params=None, data=None):
   r = requests.post("https://webexapis.com/v1" + endpoint,
                     headers = {"Authorization": "Bearer " + BOT_TOKEN, "Content-Type": "application/json"},
@@ -37,8 +41,8 @@ def get_self():
   return r.json()
 
 # grabs the rooms the bot is in
-# for now just grab the first and use it
-# should only be in 1 anyway
+# this will be passed to get_room_by_id so i can hard code
+# the room id
 def get_rooms():
   api_fetch = authorized_get("/rooms")
   return api_fetch.json()['items']
@@ -58,7 +62,7 @@ def get_message(room_id, count=1):
   return api_fetch.json()
 
 # sends a message
-# assuming i did it right
+# assuming i did it right (it seems i did)
 def post_message(room_id, text):
   api_response = authorized_post("/messages", data = {"roomId": room_id, "text": text})
   if (api_response == None):
@@ -68,11 +72,14 @@ def post_message(room_id, text):
 # this function starts up the bot and inits the main loop
 def main():
   print("Hello World!")
+
+  # some starter data
   bot_data = get_self()
   self_id = bot_data['id']
   bot_name = bot_data['displayName']
   print(f"Started bot {bot_name}.")
 
+  # room info
   rooms = get_rooms()
   room = get_room_by_id(rooms, PROJECT_ROOM_ID)
   print(f"Found {len(rooms)} rooms. Arbitrarilty selecting room {room['title']}")
@@ -84,13 +91,13 @@ def main():
     poll_interval = 2
     time.sleep(poll_interval) # 2 sec poll interval
     message = get_message(room['id'])
-    #print(message)
     if (len(message['items']) < 1):
       # no messages so skip
       continue
+    # pass the message to the handler
     response = handle_message(message['items'][0])
-    #print(response)
     if (response != None):
+      # if there is no response, do nothing. if response, send it
       post_message(room['id'], response)
 
 
