@@ -1,9 +1,15 @@
+BOT_NAME = "final-porject"
+
 # registry of previously handled messages
 # since the API has no way to tell us we've already done this one
 previously_handled_messages = []
-BOT_NAME = "final-porject"
 
+# core message handler
+# first checks if message has been seen before
+# then removes the prefix and parses the command
+# then passes to a handler
 def handle_message(message):
+  # if we seen before, print id and quantity, then skip
   if (message['id'] in previously_handled_messages):
     print(f"Message id {id_trunc(message['id'])} already seen. {len(previously_handled_messages)} messages seen so far. Skipping.")
     return None
@@ -19,6 +25,7 @@ def handle_message(message):
     if (message_text.startswith(BOT_NAME)):
       # trim out BOT_NAME and any leading spaces
       message_text = message_text[len(BOT_NAME):].strip()
+      # now we can grab the actual command
       command = parse_command(message_text)
       print(f"Caught command '{message_text}'")
 
@@ -36,15 +43,18 @@ def handle_message(message):
 
     return None
 
+# simple help handler
+# this should probably be changed!!!!
 def help_handler(message_text):
   return "This is my super cool help message!"
 
 
 
-
+# parse a command by basically just grabbing the first word
 def parse_command(message_text):
   return message_text.split(' ')[0]
 
+# ids are obnoxiously long, so we just take the first 8 and last 8 chars
 def id_trunc(id):
   text = str(id)
   return text[0:8] + "..." + text[96:104]
