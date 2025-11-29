@@ -14,30 +14,25 @@ def get_calendar_service():
     credentials = service_account.Credentials.from_service_account_file('credentials.json', scopes=SCOPES)
     return build('calendar', 'v3', credentials=credentials)
 
-def create_event(service, title, date_str, start_str, duration_min=60):
+def create_event(title, date_str, start_str, duration_min=60):
     service = get_calendar_service()
-    timezone = pytz.timezone('America/Los Angeles')
+    timezone = pytz.timezone('America/Los_Angeles')
     start_time_str = f"{date_str} {start_str}"
     start_time = timezone.localize(datetime.strptime(start_time_str, "%Y-%m-%d %H:%M"))
-    end_time = start_time + timedelta(minutes=duration_min)
-
+    end_time = start_time + timedelta(minutes=duration_min) #sets end time for meetings
     event = {
         'summary': title, 
         'start': {
             'dateTime': start_time.isoformat(),
-            'timeZone': 'America/Los Angeles',    
+            'timeZone': 'America/Los_Angeles',    
         },
         'end': {
             'dateTime': end_time.isoformat(),
-            'timeZone': 'America/Los Angeles',
+            'timeZone': 'America/Los_Angeles',
         },     
     }
-    return {
-        'id': event['id'],
-        'title': title,
-        'start': f"{date_str} {start_str}"
-    }
     event = service.events().insert(calendarId='primary', body=event).execute()
+    return {"title": title, "date": date_str, "time": start_str, "duration": duration_min}
 
 #delete a scheduled meeting
 def delete_event(event_id):

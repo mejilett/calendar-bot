@@ -1,3 +1,4 @@
+import calendar_ops
 BOT_NAME = "final-porject"
 
 # registry of previously handled messages
@@ -33,6 +34,8 @@ def handle_message(message):
         return help_handler(message_text)
       elif (command in ("hello")):
         return "Hello world!"
+      elif (command in ("create", "/create")):
+        return create_handler(message_text)
 
 
 
@@ -47,7 +50,17 @@ def handle_message(message):
 # this should probably be changed!!!!
 def help_handler(message_text):
   return "This is my super cool help message!"
-
+#meeting creation handler
+def create_handler(message_text):
+  words = message_text.split()
+  command = words[0]
+  title = words[1]
+  date = words[2]
+  start_str = words[3]
+  
+  print(f"Meeting created: title='{title}, date='{date}', time='{start_str}'")
+  result = calendar_ops.create_event(title, date, start_str, duration_min=60)
+  return f"Meeting created: {result['title']}, {result['date']}, {result['time']}"
 
 
 # parse a command by basically just grabbing the first word
