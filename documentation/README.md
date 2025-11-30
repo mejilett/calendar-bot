@@ -1,6 +1,20 @@
-    *Clear explanation of what your workflow does
-    *List of technologies used and how they connect
-    *Basic setup/usage instructions
-    *Any code/ config files
-    *Documentation to be uploaded as a zip file to Canvas and Discussion thread by each student in a group.
-    *Submissions to Canvas are individual because peer evaluations will lead to different scores for every student (Common Group score + Individual peer evaluation score) and this facilitates marking the scores.
+# Calendar Bot Documentation
+
+The following is a brief documentation of the functionality of the calendar bot.
+
+### Clear explanation of what your workflow does
+Calendar Bot works through a Cisco Webex bot with integration with Google Calendar. The bot includes several commands, including the ability to schedule meetings and notify of meetings coming soon.
+
+### List of technologies used and how they connect
+The bot uses three core technologies:
+:Cisco Webex Rooms
+:Cisco Webex Apps
+:Google Calendar
+
+Cisco Webex Rooms are used to send and receive messages to the bot. The bot sends and receives messages from the Cisco Webex Room, then processes and sends events to Google Calendar to be created.
+
+### Setup instructions
+The bot can be set up by entering the bot token and the room ID into the `framework.py` file. From there, you can run `framework.py` using Python 3.
+
+### Any code/ config files
+For now, there are no config files, though you can manually create and read config files yourself.
