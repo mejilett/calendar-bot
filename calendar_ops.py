@@ -11,8 +11,10 @@ from googleapiclient.errors import HttpError
 
 def get_calendar_service():
     SCOPES = ["https://www.googleapis.com/auth/calendar"] #full calendar access w/ google calendar api
-    credentials = service_account.Credentials.from_service_account_file('credentials.json', scopes=SCOPES)
+    SERVICE_ACCOUNT_FILE = 'credentials.json'
+    credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
     return build('calendar', 'v3', credentials=credentials)
+
 
 def create_event(title, date_str, start_str, duration_min=60):
     service = get_calendar_service()
@@ -31,8 +33,11 @@ def create_event(title, date_str, start_str, duration_min=60):
             'timeZone': 'America/Los_Angeles',
         },     
     }
-    event = service.events().insert(calendarId='primary', body=event).execute()
-    return {"title": title, "date": date_str, "time": start_str, "duration": duration_min}
+    calendar_id = '' #put your own primary google calendar ID 
+    event = service.events().insert(calendarId=calendar_id, body=event).execute()
+    print("Event ID: {}".format(event.get('id')))
+    print("Event Link: {}".format(event.get('htmlLink')))
+    return {"id": event['id'], "link": event.get('htmlLink'), 'title': title, 'date': date_str, 'time': start_str, 'duration': duration_min}
 
 #delete a scheduled meeting
 def delete_event(event_id):
