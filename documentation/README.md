@@ -7,9 +7,9 @@ Calendar Bot works through a Cisco Webex bot with integration with Google Calend
 
 ### List of technologies used and how they connect
 The bot uses three core technologies:
-:Cisco Webex Rooms
-:Cisco Webex Apps
-:Google Calendar
+1. Cisco Webex Rooms
+2. Cisco Webex Apps
+3. Google Calendar
 
 Cisco Webex Rooms are used to send and receive messages to the bot. The bot sends and receives messages from the Cisco Webex Room, then processes and sends events to Google Calendar to be created.
 
