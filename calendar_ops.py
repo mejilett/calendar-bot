@@ -38,10 +38,3 @@ def create_event(title, date_str, start_str, duration_min=60):
     print("Event ID: {}".format(event.get('id')))
     print("Event Link: {}".format(event.get('htmlLink')))
     return {"id": event['id'], "link": event.get('htmlLink'), 'title': title, 'date': date_str, 'time': start_str, 'duration': duration_min}
-
-#delete a scheduled meeting
-def delete_event(event_id):
-    service = get_calendar_service()
-    calendar_id = '' #put in primary google calendar ID
-    service.events().delete(calendarID=calendar_id, eventId=event_id).execute()
-    return {'success': True, 'message': 'Event deleted successfully'}

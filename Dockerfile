@@ -1,10 +1,10 @@
-FROM ubuntu:24.04
+FROM python:3.11-slim
 
-# idk if pip is still required but might as well
-# just install python and requests library
-RUN apt-get update && apt-get upgrade -y && apt install python3 python3-pip python3-requests -y
+WORKDIR /app
 
-WORKDIR /bot
-COPY . /bot
+# just install python libraries
+RUN pip install requests google-api-python-client google-auth google-auth-oauthlib google-auth-httplib2 pytz python-dateutil
 
-CMD python3 framework.py
+COPY . .
+
+CMD ["python3", "framework.py"]
