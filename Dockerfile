@@ -1,3 +1,4 @@
+#Group 4: Allen Liu, Scarlet Mejia
 FROM python:3.11-slim
 
 WORKDIR /app

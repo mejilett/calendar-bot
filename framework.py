@@ -1,10 +1,11 @@
+#Group 4: Allen Liu, Scarlet Mejia
 import requests
 import time
 import json
 from message_handler import handle_message, id_trunc # message_handler.py
 import calendar_ops
 
-BOT_TOKEN = ""
+BOT_TOKEN = "" #put bot token from webex
 PROJECT_ROOM_ID = "Y2lzY29zcGFyazovL3VybjpURUFNOnVzLXdlc3QtMl9yL1JPT00vNDE2MTM2ODAtY2E4MC0xMWYwLTgyNjAtNTVhZTBhYzkxNzYw"
 
 # simple authorized_get

@@ -1,5 +1,6 @@
+#Group 4: Allen Liu, Scarlet Mejia
 import calendar_ops
-BOT_NAME = "final-porject"
+BOT_NAME = "final-porject" #put your bot name
 
 # registry of previously handled messages
 # since the API has no way to tell us we've already done this one

@@ -1,3 +1,4 @@
+# Group 4: Allen Liu, Scarlet Mejia
 # Calendar Bot Documentation
 
 The following is a brief documentation of the functionality of the calendar bot.

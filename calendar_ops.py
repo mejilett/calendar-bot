@@ -1,3 +1,4 @@
+#Group 4: Allen Liu, Scarlet Mejia
 import datetime
 from datetime import timedelta, datetime
 import os.path
